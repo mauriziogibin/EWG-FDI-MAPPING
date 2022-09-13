@@ -19,7 +19,10 @@ library(ggplot2)
 library(dplyr)
 rm(list=ls())
 
-cDIR = '~/work/EWG-FDI-21-12'
+gc()
+setwd("C:/Users/madamowicz/Desktop/STECF FDI 22 10/EWG-FDI-MAPPING")
+cDIR = getwd()
+
 setwd(cDIR)
 #- Settings paths
 codePath         <- paste0(cDIR, "/scripts/")    # R scripts location
@@ -34,7 +37,7 @@ fnames <- c("TABLE_I", "TABLE_H")
 # for(i in fnames){
 i<-"Table.H"
 setwd('./original/')
-fList <- list.files(path='.',pattern=glob2rx('table_h_????.csv'))
+fList <- list.files(path='.',pattern=glob2rx('table_h????.csv'))
 fdi   <- rbindlist(lapply(fList,fread,stringsAsFactors=F,nThread=3)) 
 setwd('../')
 gc()
@@ -75,7 +78,7 @@ errors.no.lat.lon.no.csq <-
 # Errors in min max coords
 errors.lat.lon.bounds <- fdi[(rectangle_lon < -180 | rectangle_lon > 180)
                              |(rectangle_lat < -90 | rectangle_lat > 90),]
-# Errors in only rectangle type max coords
+# Errors in missing rectangle type where coords are present
 errors.rect.only <- fdi[is.na(rectangle_type) &!is.na(rectangle_lat)
                         &!is.na(rectangle_lon) & is.na(c_square),]
 
@@ -84,7 +87,7 @@ errors.one.coord <- fdi[is.na(rectangle_lon) != is.na(rectangle_lat)]
 
 # Number of rows with csquare only and wrong rect type
 errors.csq.rectangle_type <- fdi[is.na(rectangle_lon) & is.na(rectangle_lat)
-                                     & !is.na(c_square) & rectangle_type != '05*05',]
+                                 & !is.na(c_square) & !is.na(rectangle_type),]
 # SAVING ----
 setwd(outPath)
 ifelse(nrow(errors.lat.lon.bounds)>0,
@@ -141,13 +144,19 @@ fdi.csq.coords$valid <- NA;gc()
 # Assigning coords to csquares
 fdi.csq<-merge(fdi.csq,csq05[,c("cscode","type","csq_x","csq_y")], all.x=T,by.x="c_square", by.y="cscode")
 gc()
-nrow(fdi.csq[is.na(csq_x),]) # the join was a 100% match
+nrow(fdi.csq[is.na(csq_x),])
 fdi.csq[is.na(csq_x),]
-fdi.csq<-fdi.csq[,.(country,year,quarter,vessel_length,fishing_tech,gear_type,
-                                target_assemblage,mesh_size_range,metier,supra_region,
-                                sub_region,eez_indicator,geo_indicator,specon_tech,deep,species,
-                                rectangle_type,csq_y,csq_x,c_square,totwghtlandg,totvallandg,
-                                confidential,id)]
+errors.csq <- fdi.csq[is.na(csq_x),]
+setwd(outPath)
+ifelse(nrow(errors.csq)>0,
+       errors.csq[,fwrite(.SD, paste0("Table.H.errors.csq","_",country,'.csv')),by=.(country)],
+       'NO RECORDS')
+setwd(dataF)
+fdi.csq<-fdi.csq[!is.na(csq_x),.(country,year,quarter,vessel_length,fishing_tech,gear_type,
+                                 target_assemblage,mesh_size_range,metier,supra_region,
+                                 sub_region,eez_indicator,geo_indicator,specon_tech,deep,species,
+                                 rectangle_type,csq_y,csq_x,c_square,totwghtlandg,totvallandg,
+                                 confidential,id)]
 setnames(fdi.csq,old = c("csq_y","csq_x"), new = c("rectangle_lat","rectangle_lon"))
 nrow(fdi.csq[is.na(rectangle_lon),])
 nrow(fdi.csq[is.na(rectangle_lat),])
@@ -226,7 +235,8 @@ errors.ids <- unique(
     errors.csq.rectangle_type$id,
     errors.rect.check$id,
     fdi.coords.on.land$id,
-    fdi.csq.on.land$id
+    fdi.csq.on.land$id,
+    errors.csq
   )
 )
 
@@ -234,6 +244,7 @@ cols <- names(fdi)
 # fwrite(fdi.csq,'fdi.csq.Table.H.csv')
 # fwrite(fdi,'fdi.Table.H.rbind.csv')
 fdi.no.csq <- fdi[!id%in%fdi.csq$id,]
+fdi.no.csq$log_upload_id<-NULL
 
 fdi <- NULL;gc()
 csq05 <- NULL;gc()

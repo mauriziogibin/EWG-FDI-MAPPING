@@ -26,7 +26,7 @@ options(digits = 9)
 rm(list=ls())
 #- Settings paths
 
-cDIR = '~/work/EWG-FDI-21-12'
+cDIR = 'C:/Users/madamowicz/Desktop/STECF FDI 22 10/EWG-FDI-MAPPING'
 setwd(cDIR)
 #- Settings paths
 codePath         <- paste0(cDIR, "/scripts/")    # R scripts location
@@ -83,10 +83,13 @@ fdi <- fdi[, .("totwghtlandg" = sum(totwghtlandg, na.rm = T),
 setwd(fshzn)
 fishing_zones           <- fread("fishing_zones_2021.csv", stringsAsFactors = F)
 setwd(dataF)
+fishing_zones$sub_region<-tolower(fishing_zones$sub_region)
+fdi$sub_region<-tolower(fdi$sub_region)
 #Assign fishing zones to the fdi data
 fdi <- left_join(fdi,fishing_zones,by="sub_region")
 fdi<-data.table(fdi)
-fwrite(fdi[sub_region=="NK",.(nrows=.N),by=.(country,year,confidential,totwghtlandg,totvallandg,valid)],paste0(outPath,"Table.H.missing.subregion.csv"))
+fdi[is.na(fishing_zone),unique(sub_region)]
+fwrite(fdi[sub_region=="nk",.(nrows=.N),by=.(country,year,confidential,totwghtlandg,totvallandg,valid)],paste0(outPath,"Table.H.missing.subregion.csv"))
 
 #Remove rows with sub_region = NK and remove BSAs
 fdi<-fdi[!sub_region %in% c("NK","BSA")]
