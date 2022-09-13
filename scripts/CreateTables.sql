@@ -1,0 +1,56 @@
+CREATE TABLE upload.table_h
+(
+    id bigint NOT NULL DEFAULT nextval('upload.seq_table_h_id'::regclass),
+    country_code character varying(3) COLLATE pg_catalog."default" NOT NULL,
+    year smallint NOT NULL,
+    quarter character varying(3) COLLATE pg_catalog."default" NOT NULL,
+    vessel_length character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    fishing_tech character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    gear_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    target_assemblage character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    mesh_size_range character varying(25) COLLATE pg_catalog."default" NOT NULL,
+    metier character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    supra_region character varying(3) COLLATE pg_catalog."default" NOT NULL,
+    sub_region character varying(25) COLLATE pg_catalog."default" NOT NULL,
+    eez_indicator character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    geo_indicator character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    specon_tech character varying(25) COLLATE pg_catalog."default" NOT NULL,
+    deep character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    rectangle_type character varying(10) COLLATE pg_catalog."default",
+    rectangle_lat character varying(25) COLLATE pg_catalog."default",
+    rectangle_lon character varying(25) COLLATE pg_catalog."default",
+    c_square character varying(25) COLLATE pg_catalog."default",
+    species character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    totwghtlandg numeric NOT NULL,
+    totvallandg numeric,
+    confidential character(1) COLLATE pg_catalog."default" NOT NULL,
+    log_upload_id integer NOT NULL
+)
+
+CREATE TABLE upload.table_i
+(
+    id bigint NOT NULL DEFAULT nextval('upload.seq_table_i_id'::regclass),
+    country_code character varying(3) COLLATE pg_catalog."default" NOT NULL,
+    year smallint NOT NULL,
+    quarter character varying(3) COLLATE pg_catalog."default" NOT NULL,
+    vessel_length character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    fishing_tech character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    gear_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    target_assemblage character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    mesh_size_range character varying(25) COLLATE pg_catalog."default" NOT NULL,
+    metier character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    supra_region character varying(3) COLLATE pg_catalog."default" NOT NULL,
+    sub_region character varying(25) COLLATE pg_catalog."default" NOT NULL,
+    eez_indicator character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    geo_indicator character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    specon_tech character varying(25) COLLATE pg_catalog."default" NOT NULL,
+    deep character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    rectangle_type character varying(10) COLLATE pg_catalog."default",
+    rectangle_lat character varying(25) COLLATE pg_catalog."default",
+    rectangle_lon character varying(25) COLLATE pg_catalog."default",
+    c_square character varying(25) COLLATE pg_catalog."default",
+    totfishdays numeric NOT NULL,
+    confidential character(1) COLLATE pg_catalog."default" NOT NULL,
+    log_upload_id integer NOT NULL
+)
+
