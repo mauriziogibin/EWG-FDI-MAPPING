@@ -1,15 +1,16 @@
 #-------------------------------------------------------------------------------
 #
 # Script to clean, analyse and map the spatial effort and spatial landings
-# datasets of the FDI EWG21-12 20210913 - 20210917
+# datasets of the FDI EWG22-10 20220912 - 20210916
 # Tor 3 team : Maciej, Maksims, Maurizio, Stefanos. Every 
 # contribution is highlighted.
 # Contact: maurizio.gibin@gmail.com
 #
-# Date: 2021-09-13 - 2021-09-17
+# Date: 2022-09-12 - 2022-09-16
 #
 #
 #-------------------------------------------------------------------------------
+
 ###################
 # Maciej Adamowicz
 # 14.09.2018
@@ -26,7 +27,7 @@ options(digits = 9)
 rm(list=ls())
 #- Settings paths
 
-cDIR = '~/work/EWG-FDI-21-12'
+cDIR = '~/work/EWG-FDI-22-10'
 setwd(cDIR)
 #- Settings paths
 codePath         <- paste0(cDIR, "/scripts/")    # R scripts location
@@ -42,9 +43,9 @@ load(file = "grids.RData")
 setwd(dataF)
 
 ####################
-#Maciej 19.09.2019 #
+# Maciej 19.09.2019 #
 ####################
-load(file="fdi_Table.I.RData")
+load(file="fdi_table_i.RData")
 
 fdi <- fdi %>%
   group_by(country, year, quarter, gear_typeN, specon_tech, sub_region, rectangle_type,
@@ -63,6 +64,9 @@ setwd(dataF)
 #Assign fishing zones to the fdi data
 fdi <- left_join(fdi,fishing_zones,by="sub_region")
 fdi<-data.table(fdi)
+
+fdi[sub_region=="NK"&country=='PRT',]
+
 fwrite(fdi[sub_region=="NK",.(nrows=.N),by=.(country,year,confidential,totfishdays,valid)],paste0(outPath,"Table.I.missing.subregion.csv"))
 
 #Remove rows with sub_region = NK and remove BSAs
@@ -185,8 +189,8 @@ csquares.5.5 <- select(fdi.csq.5.5,csq_c_id,rectangle_lon,rectangle_lat) %>%
   distinct()
 
 grid.for.5.5 <- inner_join(data.frame(lon_diff=seq(-2, by=0.5, length.out = 10), key=1),
-                          data.frame(lat_diff=seq(-2, by=0.5, length.out = 10), key=1), 
-                          by="key")
+                           data.frame(lat_diff=seq(-2, by=0.5, length.out = 10), key=1), 
+                           by="key")
 
 csquares.5.5 <- inner_join(csquares.5.5,grid.for.5.5,by="key") %>% 
   mutate(bl_lon = rectangle_lon - lon_diff,
@@ -237,7 +241,7 @@ result <-
     cscode
   )]
 result[,`:=`(totfishdays = V1,
-          V1 = NULL)]
+             V1 = NULL)]
 
 
 result<-left_join(result,csq05,by="cscode") %>% 
