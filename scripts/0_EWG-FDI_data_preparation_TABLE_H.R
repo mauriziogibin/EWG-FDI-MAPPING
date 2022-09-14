@@ -236,7 +236,7 @@ errors.ids <- unique(
     errors.rect.check$id,
     fdi.coords.on.land$id,
     fdi.csq.on.land$id,
-    errors.csq
+    errors.csq$id
   )
 )
 
