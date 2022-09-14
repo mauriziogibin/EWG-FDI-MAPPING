@@ -12,7 +12,7 @@
 #-------------------------------------------------------------------------------
 ###################
 # Maciej Adamowicz
-# 14.09.2018
+# 14.09.2022
 ###################
 library(data.table)
 library(sf)
@@ -81,7 +81,7 @@ fdi <- fdi[, .("totwghtlandg" = sum(totwghtlandg, na.rm = T),
 
 #Loading the file with subregions assigned to fishing zones
 setwd(fshzn)
-fishing_zones           <- fread("fishing_zones_2021.csv", stringsAsFactors = F)
+fishing_zones           <- fread("fishing_zones_2022.csv", stringsAsFactors = F)
 setwd(dataF)
 fishing_zones$sub_region<-tolower(fishing_zones$sub_region)
 fdi$sub_region<-tolower(fdi$sub_region)

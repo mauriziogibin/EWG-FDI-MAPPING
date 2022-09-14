@@ -49,7 +49,7 @@ names(table.H.errors) <- tH
 names(table.H.errors)
 table.H.errors <- 
   lapply(1:length(table.H.errors),function(x){
-    if (x!=13&&x!=14){  
+    if (x!=12&&x!=13){  
       n <- 6
       countrylbl <- gsub('.csv','',substr(names(table.H.errors[x]), nchar(names(table.H.errors[x]))-n, nchar(names(table.H.errors[x]))))
       DT <- rbindlist(table.H.errors[x])
@@ -61,23 +61,23 @@ table.H.errors <-
 
 table.H.errors[13]
 names(table.H.errors) <- tH
-names(table.H.errors)[c(-13,-14)] <-   gsub('.{8}$','',names(table.H.errors)[c(-13,-14)])
-names(table.H.errors)[c(13,14)] <-   gsub('.csv$','',names(table.H.errors)[c(13,14)])
+names(table.H.errors)[c(-12,-13)] <-   gsub('.{8}$','',names(table.H.errors)[c(-12,-13)])
+names(table.H.errors)[c(12,13)] <-   gsub('.csv$','',names(table.H.errors)[c(12,13)])
 table.H.errors = table.H.errors[order(names(table.H.errors))]
 
 names(table.H.errors)
 newnames <- c(names(table.H.errors[1]),
-              names(table.H.errors[2:12]),
+              names(table.H.errors[2:11]),
+              names(table.H.errors[12]),
               names(table.H.errors[13]),
-              names(table.H.errors[14]),
-              names(table.H.errors[15:20]),
-              names(table.H.errors[21]))
+              names(table.H.errors[14:19]),
+              names(table.H.errors[20]))
 table.H.errors <- list( rbindlist(table.H.errors[1]),
-                        rbindlist(table.H.errors[2:12]),
+                        rbindlist(table.H.errors[2:11]),
+                        rbindlist(table.H.errors[12]),
                         rbindlist(table.H.errors[13]),
-                        rbindlist(table.H.errors[14]),
-                        rbindlist(table.H.errors[15:20]),
-                        rbindlist(table.H.errors[21]))
+                        rbindlist(table.H.errors[14:19]),
+                        rbindlist(table.H.errors[20]))
 names(table.H.errors) <- unique(newnames)
 names(table.H.errors)
 # The third table is the  errors in unit weight that is already summarised,
