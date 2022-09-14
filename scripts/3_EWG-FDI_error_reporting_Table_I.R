@@ -1,17 +1,17 @@
 #-------------------------------------------------------------------------------
 #
 # Script to clean, analyse and map the spatial effort and spatial landings
-# datasets of the FDI EWG21-12 20210913 - 20210917
+# datasets of the FDI EWG22-10 20220912 - 20210916
 # Tor 3 team : Maciej, Maksims, Maurizio, Stefanos. Every 
 # contribution is highlighted.
 # Contact: maurizio.gibin@gmail.com
 #
-# Date: 2021-09-13 - 2021-09-17
+# Date: 2022-09-12 - 2022-09-16
 #
 #
 #-------------------------------------------------------------------------------
 #########
-#Maurizio#
+#Maurizio#i
 #########
 library(data.table)
 library(xlsx)
@@ -22,7 +22,7 @@ options(digits = 9)
 #- Clear workspace
 rm(list=ls())
 
-cDIR = '~/work/EWG-FDI-21-12'
+cDIR = '~/work/EWG-FDI-22-10'
 setwd(cDIR)
 #- Settings paths
 codePath         <- paste0(cDIR, "/scripts/")    # R scripts location
@@ -34,53 +34,60 @@ outPath          <- paste0(cDIR, "/output/")   # output
 # FDI DATA ----
 setwd(outPath)
 # 
-tI <- list.files(path = 'effort', pattern = glob2rx("*Table.I*.csv"))
+tI <- list.files(path = 'effort', pattern = glob2rx("*able.I*.csv"))
 sort(tI)
 tI <- tI[!tI %like% '*gearNOT*']
 sort(tI)
 # We need to select the nuber of fields to keep and also made a recap on the number of rows and landings/effort we loose.
 # TABLE I Reporting ----
 setwd(paste0(outPath,'effort/'))
+
 table.I.errors <- lapply(tI,fread)
 names(table.I.errors) <- tI
+
 table.I.errors <- 
   lapply(1:length(table.I.errors),function(x){
-    if (x!=11){  
+    if (x!=12){  
     n <- 6
     countrylbl <- gsub('.csv','',substr(names(table.I.errors[x]), nchar(names(table.I.errors[x]))-n, nchar(names(table.I.errors[x]))))
     DT <- rbindlist(table.I.errors[x])
     DT[,country:=countrylbl]
-    return(DT)}
-    else{NULL}
+    return(DT)
+    }
+    else{table.I.errors[[x]]}
 })
 
 names(table.I.errors) <- tI
-names(table.I.errors)[-11] <-   gsub('.{8}$','',names(table.I.errors)[-11])
-names(table.I.errors)[11] <-   gsub('.csv$','',names(table.I.errors)[11])
-table.I.errors = table.I.errors[order(names(table.I.errors))]
+
+names(table.I.errors)[-12] <-   gsub('.{8}$','',names(table.I.errors)[-12])
+names(table.I.errors)[12] <-   gsub('.csv$','',names(table.I.errors)[12])
 
 names(table.I.errors)
-newnames <- c(names(table.I.errors[1]),
-              names(table.I.errors[2]),
-              names(table.I.errors[3]),
-              names(table.I.errors[11]),
-              names(table.I.errors[12]),
-              names(table.I.errors[18]))
-table.I.errors <- list( rbindlist(table.I.errors[1]),
-                        rbindlist(table.I.errors[2]),
-                        rbindlist(table.I.errors[3:10]),
-                        rbindlist(table.I.errors[11]),
-                        rbindlist(table.I.errors[12:17]),
-                        rbindlist(table.I.errors[18]))
-names(table.I.errors) <- newnames
+table.I.errors = table.I.errors[order(names(table.I.errors))]
 # The first table is the missing subregion one that is already summarised,
 # while the others are not.
-missing.subregion <- table.I.errors[[4]]
-table.I.errors <- table.I.errors[-4]
+missing.subregion <- (table.I.errors[[12]])
+table.I.errors <- table.I.errors[-12]
 missing.subregion <-
   missing.subregion[, list(totfishdays = sum(totfishdays),
                            nrows = sum(nrows)),
                     by = .(country, year)]
+
+names(table.I.errors)
+newnames <- c(names(table.I.errors[1]),
+              names(table.I.errors[2]),
+              #names(table.I.errors[3]),
+              names(table.I.errors[12]),
+              #names(table.I.errors[12]),
+              names(table.I.errors[19]))
+table.I.errors <- list( rbindlist(table.I.errors[1]),
+                        rbindlist(table.I.errors[2:11]),
+                        #rbindlist(table.I.errors[3:10]),
+                        #rbindlist(table.I.errors[11]),
+                        rbindlist(table.I.errors[12:18]),
+                        rbindlist(table.I.errors[19]))
+names(table.I.errors) <- newnames
+
 table.I.errors <- Map(cbind,table.I.errors,valid ="N")
 table.I.errors <- lapply(table.I.errors,function(x){return(x[,.(country,year,totfishdays)])})
 table.I.tables <- lapply(table.I.errors,function(x){return(x <- x[,list(totfishdays = sum(totfishdays),
@@ -223,3 +230,4 @@ nrow(table.i.total[valid=='N',])
 # Percentage
 round((nrow(table.i.total[valid=='N',])/
   nrow(table.i.total)*100),2)
+
