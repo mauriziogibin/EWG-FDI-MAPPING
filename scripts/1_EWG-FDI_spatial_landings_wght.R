@@ -25,7 +25,7 @@ options(digits = 9)
 #- Clear workspace
 rm(list=ls())
 #- Settings paths
-
+gc()
 cDIR = 'C:/Users/madamowicz/Desktop/STECF FDI 22 10/EWG-FDI-MAPPING'
 setwd(cDIR)
 #- Settings paths
@@ -92,7 +92,7 @@ fdi[is.na(fishing_zone),unique(sub_region)]
 fwrite(fdi[sub_region=="nk",.(nrows=.N),by=.(country,year,confidential,totwghtlandg,totvallandg,valid)],paste0(outPath,"Table.H.missing.subregion.csv"))
 
 #Remove rows with sub_region = NK and remove BSAs
-fdi<-fdi[!sub_region %in% c("NK","BSA")]
+fdi<-fdi[!sub_region %in% c("nk","bsa")]
 #Check if all rows have a fishing zone assigned
 unique(fdi[is.na(fishing_zone),.(sub_region)])
 
@@ -120,7 +120,7 @@ sum(fdi.ices$totwghtlandg)
 fdi.ices<-left_join(fdi.ices,csq05,by="icesname") 
 #Divide fishing days by 2 (each ICES rectangle has 2 c-squares)
 fdi.ices<-mutate(fdi.ices,totwghtlandg=totwghtlandg/2)
-#Check if the total fishing days remained the same
+#Check if the totat weight of landings remained the same
 sum(fdi.ices$totwghtlandg)
 fdi.ices<-select(fdi.ices,country:icesname,cscode)
 
