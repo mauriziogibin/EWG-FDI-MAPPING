@@ -1,12 +1,12 @@
 #-------------------------------------------------------------------------------
 #
 # Script to clean, analyse and map the spatial effort and spatial landings
-# datasets of the FDI EWG21-12 20210913 - 20210917
+# datasets of the FDI EWG22-10 20220912 - 20220916
 # Tor 3 team : Maciej, Maksims, Maurizio, Stefanos. Every 
 # contribution is highlighted.
 # Contact: maurizio.gibin@gmail.com
 #
-# Date: 2021-09-13 - 2021-09-17
+# Date: 2022-09-12 - 2022-09-16
 #
 #
 #-------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ options(digits = 9)
 #- Clear workspace
 rm(list=ls())
 
-cDIR = '~/work/EWG-FDI-21-12'
+cDIR = '~/work/EWG-FDI-22-10'
 setwd(cDIR)
 #- Settings paths
 codePath         <- paste0(cDIR, "/scripts/")    # R scripts location
@@ -36,11 +36,11 @@ outPath          <- paste0(cDIR, "/output/")   # output
 setwd(dataF)
 # Loading the spatial effort and landings data from ftp
 fnames <- c("TABLE_I", "TABLE_H")
-i<-"Table.I"
+i<-"table_i"
 
 # for(i in fnames){
 setwd('./original/')
-fList <- list.files(path='.',pattern=glob2rx('table_i_????.csv'))
+fList <- list.files(path='.',pattern=glob2rx('table_i*'))
 fdi   <- rbindlist(lapply(fList,fread,stringsAsFactors=F,nThread=3)) 
 setwd('../')
 gc()
@@ -342,7 +342,7 @@ geartypeU             <- unique(fdi$gear_typeN)
 gclasses <- as.list(c("DREDGES", "HOOKS", "NETS", "SEINE", "sNETS", "TBBL120",
                       "TBBM120", "TBBNONE", "TRAPS", "TRAWLL100", "TRAWLM100",
                       "TRAWLNONE"))
-if(i == "Table.I") svalue <- "fishing_days=sum(totfishdays)" else svalue <- "landings=sum(totwghtlandg)"
+if(i == "table_i") svalue <- "fishing_days=sum(totfishdays)" else svalue <- "landings=sum(totwghtlandg)"
 
 gearNOTingclasses <- fdi[!gear_typeN %in% gclasses]
 
@@ -401,6 +401,7 @@ fdi <-
     confidential,
     valid
   )]
+
 fdi[,`:=`(totfishdays = V1,
           V1 = NULL)]
 # SAVING ----
@@ -410,7 +411,7 @@ fdi_TABLE_I_errors <- fdi[valid == 'N']
 
 # SAVING ----
 fwrite(fdi_TABLE_I_errors,'../output/fdi_TABLE_I_errors.csv')
-save(fdi.tableau,file = paste("fdi_Tableau_", i, ".RData", sep=''))
+save(fdi.tableau,file = paste("fdi_tableau_", i, ".RData", sep=''))
 
 rm(list=ls())
 gc()
