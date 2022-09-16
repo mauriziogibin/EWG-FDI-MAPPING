@@ -21,7 +21,7 @@ library(ggplot2)
 rm(list=ls())
 # cDir <- setwd("~Work=-/FDI2018/")
 
-cDIR = '~/work/EWG-FDI-21-12'
+cDIR = 'C:/Users/madamowicz/Desktop/STECF FDI 22 10/EWG-FDI-MAPPING'
 setwd(cDIR)
 #- Settings paths
 codePath         <- paste0(cDIR, "/scripts/")    # R scripts location
@@ -38,7 +38,7 @@ setwd(dataF)
 load(file="fdi_Table.I.RData")
 #Loading the file with subregions assigned to fishing zones
 setwd(fshzn)
-fishing_zones           <- fread("fishing_zones_2021.csv", stringsAsFactors = F)
+fishing_zones           <- fread("fishing_zones_2022.csv", stringsAsFactors = F)
 setwd(dataF)
 #Assign fishing zones to the fdi data
 fdi <-merge(fdi,fishing_zones,by="sub_region",all.x=T)
@@ -167,20 +167,24 @@ ggplot(fdi[!is.na(fishing_zone)]) +
 load(file="fdi_Table.H.RData")
 #Loading the file with subregions assigned to fishing zones
 setwd(fshzn)
-fishing_zones           <- fread("fishing_zones_2021.csv",stringsAsFactors = F)
+fishing_zones           <- fread("fishing_zones_2022.csv",stringsAsFactors = F)
 setwd(dataF)
 #Assign fishing zones to the fdi data
+fishing_zones$sub_region<-tolower(fishing_zones$sub_region)
+fdi$sub_region<-tolower(fdi$sub_region)
 fdi <-merge(fdi,fishing_zones,by="sub_region",all.x=T)
 fdi<-data.table(fdi)
+fdi[is.na(fishing_zone) | fishing_zone=="",unique(sub_region)]
+
 
 #Remove rows with sub_region = NK and remove BSAs
-fdi<-fdi[!sub_region %in% c("NK","BSA")]
+fdi<-fdi[!sub_region %in% c("nk","bsa")]
 #Check if all rows have a fishing zone assigned
 unique(fdi[is.na(fishing_zone),.(sub_region)])
 unique(fdi$year)
 
 #fdi[,fishing_zone_year:=paste0(fishing_zone,'\n',as.character(year))]
-library(esquisse)
+#library(esquisse)
 # esquisser()
 fdi[confidential=='V',]$confidential <- 'N'
 fdi[confidential=='A',]$confidential <- 'Y'
@@ -295,3 +299,4 @@ ggsave(filename = '../output/Table_H_Confidential_Total_Landings.png',
        scale= 1.2,
        unit = 'px',
        dpi = 300) 
+
