@@ -49,7 +49,7 @@ names(table.H.errors) <- tH
 names(table.H.errors)
 table.H.errors <- 
   lapply(1:length(table.H.errors),function(x){
-    if (x!=12&&x!=13){  
+    if (x!=10&&x!=11){  
       n <- 6
       countrylbl <- gsub('.csv','',substr(names(table.H.errors[x]), nchar(names(table.H.errors[x]))-n, nchar(names(table.H.errors[x]))))
       DT <- rbindlist(table.H.errors[x])
@@ -59,25 +59,25 @@ table.H.errors <-
     return(DT)}
   })
 
-table.H.errors[13]
+table.H.errors[10]
 names(table.H.errors) <- tH
-names(table.H.errors)[c(-12,-13)] <-   gsub('.{8}$','',names(table.H.errors)[c(-12,-13)])
-names(table.H.errors)[c(12,13)] <-   gsub('.csv$','',names(table.H.errors)[c(12,13)])
+names(table.H.errors)[c(-10,-11)] <-   gsub('.{8}$','',names(table.H.errors)[c(-10,-11)])
+names(table.H.errors)[c(10,11)] <-   gsub('.csv$','',names(table.H.errors)[c(10,11)])
 table.H.errors = table.H.errors[order(names(table.H.errors))]
 
 names(table.H.errors)
 newnames <- c(names(table.H.errors[1]),
-              names(table.H.errors[2:11]),
-              names(table.H.errors[12]),
-              names(table.H.errors[13]),
-              names(table.H.errors[14:19]),
-              names(table.H.errors[20]))
+              names(table.H.errors[2:9]),
+              names(table.H.errors[10]),
+              names(table.H.errors[11]),
+              names(table.H.errors[12:15]),
+              names(table.H.errors[16]))
 table.H.errors <- list( rbindlist(table.H.errors[1]),
-                        rbindlist(table.H.errors[2:11]),
-                        rbindlist(table.H.errors[12]),
-                        rbindlist(table.H.errors[13]),
-                        rbindlist(table.H.errors[14:19]),
-                        rbindlist(table.H.errors[20]))
+                        rbindlist(table.H.errors[2:9]),
+                        rbindlist(table.H.errors[10]),
+                        rbindlist(table.H.errors[11]),
+                        rbindlist(table.H.errors[12:15]),
+                        rbindlist(table.H.errors[16]))
 names(table.H.errors) <- unique(newnames)
 names(table.H.errors)
 # The third table is the  errors in unit weight that is already summarised,
@@ -149,7 +149,7 @@ TABLE_COLNAMES_STYLE <- CellStyle(wb) + Font(wb, isBold=TRUE) +
 
 # Create a new sheet in the workbook
 #++++++++++++++++++++++++++++++++++++
-sheet <- createSheet(wb, sheetName = "Table H Recap Table to check Unit Weight and Price")
+sheet <- createSheet(wb, sheetName = "Tab H Weight and value")
 
 xlsx.addTitle<-function(sheet, rowIndex, title, titleStyle){
   rows <-createRow(sheet,rowIndex=rowIndex)
@@ -159,11 +159,11 @@ xlsx.addTitle<-function(sheet, rowIndex, title, titleStyle){
 }
 
 # Add title
-xlsx.addTitle(sheet, rowIndex=1, title="Table H Recap Table to check Unit Weight and Price",
+xlsx.addTitle(sheet, rowIndex=1, title="Table H: Summary table to check unit of weight and value",
               titleStyle = TITLE_STYLE)
 # Add sub title
 xlsx.addTitle(sheet, rowIndex=3, 
-              title="Summary Table for the Landings and Value",
+              title="Note: These are not errors. This is an overview of all landings by Member State and year.",
               titleStyle = SUB_TITLE_STYLE)
 # Add a table into a worksheet
 #++++++++++++++++++++++++++++++++++++
@@ -201,7 +201,7 @@ xlsx.addTitle(sheet, rowIndex=1, title="Table H Missing Subregion",
               titleStyle = TITLE_STYLE)
 # Add sub title
 xlsx.addTitle(sheet, rowIndex=3, 
-              title="Recap on the number of rows in Table H with missing Subregion",
+              title="Table H:  Summary of total weight and value of landings by Member State and year where the variable SUB_REGION is not specified.",
               titleStyle = SUB_TITLE_STYLE)
 # Add a table into a worksheet
 #++++++++++++++++++++++++++++++++++++
