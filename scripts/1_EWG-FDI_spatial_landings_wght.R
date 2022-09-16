@@ -88,7 +88,7 @@ fdi$sub_region<-tolower(fdi$sub_region)
 #Assign fishing zones to the fdi data
 fdi <- left_join(fdi,fishing_zones,by="sub_region")
 fdi<-data.table(fdi)
-fdi[is.na(fishing_zone),unique(sub_region)]
+fdi[is.na(fishing_zone) | fishing_zone=="",unique(sub_region)]
 fwrite(fdi[sub_region=="nk",.(nrows=.N),by=.(country,year,confidential,totwghtlandg,totvallandg,valid)],paste0(outPath,"Table.H.missing.subregion.csv"))
 
 #Remove rows with sub_region = NK and remove BSAs
@@ -271,7 +271,7 @@ result<-left_join(result,csq05,by="cscode") %>%
   rename(icesname=icesname.x)
 
 
-print(paste0("Are total landings (weight) total effort correct? : ",sum(result$totwghtlandg)==sum(fdi$totwghtlandg)))
+print(paste0("Are total landings (weight) total effort correct? : ",round(sum(result$totwghtlandg),6)==round(sum(fdi$totwghtlandg),6)))
 
 result_sf<-st_sf(result)
 setwd(outPath)

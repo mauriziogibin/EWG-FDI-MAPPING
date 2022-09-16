@@ -181,19 +181,25 @@ fdi.coords <- merge(fdi.coords,csq05Land[,c("type","csq_x","csq_y")],
                     by.y = c("csq_x","csq_y"),
                     all.x = TRUE)
 gc()
-fdi.coords[type=='land',valid:='NO']
+#fdi.coords[type=='land',valid:='NO']
+fdi.coords[country=="FRA" & rectangle_lat==43.25 & rectangle_lon==2.75, valid:=NA]
+fdi.coords[country=="HRV" & rectangle_lat==43.25 & rectangle_lon==17.75, valid:=NA]
 fdi.coords.on.land <- fdi.coords[type=='land',]
 fdi.csq <- merge(fdi.csq,csq05Land[,c("type","cscode")],
                     by.x = "c_square",
                     by.y = "cscode",
                     all.x = TRUE)
-fdi.csq[type=='land',valid:='NO']
+#fdi.csq[type=='land',valid:='NO']
+fdi.csq[country=="FRA" & rectangle_lat==43.25 & rectangle_lon==2.75, valid:=NA]
+fdi.csq[country=="HRV" & rectangle_lat==43.25 & rectangle_lon==17.75, valid:=NA]
 fdi.csq.on.land <- fdi.csq[type=='land',]
 fdi.csq.coords <- merge(fdi.csq.coords,csq05Land[,c("type","cscode")],
                  by.x = "c_square",
                  by.y = "cscode",
                  all.x = TRUE)
-fdi.csq.coords[type=='land',valid:='NO']
+#fdi.csq.coords[type=='land',valid:='NO']
+fdi.csq.coords[country=="FRA" & rectangle_lat==43.25 & rectangle_lon==2.75, valid:=NA]
+fdi.csq.coords[country=="HRV" & rectangle_lat==43.25 & rectangle_lon==17.75, valid:=NA]
 fdi.csq.coords.on.land <- fdi.csq.coords[type=='land',]
 fdi.csq.on.land    <- fdi.csq.on.land[,lapply(.SD,as.character)]
 fdi.coords.on.land <- fdi.coords.on.land[,lapply(.SD,as.character)]
@@ -201,7 +207,8 @@ cols <- names(fdi.coords.on.land)[names(fdi.coords.on.land)%in% names(fdi.csq.on
 
 points.on.land <- rbind(fdi.csq.on.land,
                         fdi.coords.on.land[,.SD,.SDcols = cols])
-
+points.on.land <- points.on.land[!(country=="FRA" & rectangle_lat==43.25 & rectangle_lon==2.75),]
+points.on.land <- points.on.land[!(country=="HRV" & rectangle_lat==43.25 & rectangle_lon==17.75),]
 
 # SAVING ----
 setwd(outPath)
@@ -243,9 +250,9 @@ errors.ids <- unique(
 cols <- names(fdi)
 # fwrite(fdi.csq,'fdi.csq.Table.H.csv')
 # fwrite(fdi,'fdi.Table.H.rbind.csv')
+gc()
 fdi.no.csq <- fdi[!id%in%fdi.csq$id,]
-fdi.no.csq$log_upload_id<-NULL
-
+gc()
 fdi <- NULL;gc()
 csq05 <- NULL;gc()
 csq05Land <- NULL;gc()
@@ -266,8 +273,12 @@ points.on.land <- NULL;gc()
 fdi <- rbind(fdi.csq[,!c("type","valid")],fdi.no.csq)
 fdi.csq <- NULL;
 fdi.no.csq <- NULL;
+gc()
 fdi <- fdi[, valid := "Y"]
 fdi <- fdi[id %in% errors.ids, valid := "N"]
+
+fdi[country=="FRA" & rectangle_lat==43.25 & rectangle_lon==2.75, valid:="Y"]
+fdi[country=="HRV" & rectangle_lat==43.25 & rectangle_lon==17.75, valid:="Y"]
 
 fwrite(fdi,'table_h_total_valid_and_not.csv')
 
@@ -364,7 +375,7 @@ dredges <- as.list(c("DRB", "HMD", "DRH"))
 hooks   <- as.list(c("LHM", "LHP", "LLD", "LLS", "LTL"))
 snets   <- as.list(c("PS", "LA"))
 traps   <- as.list(c("FPO", "FPN", "FYK"))
-
+gc()
 fdi[gear_typeN %in% seine, gear_typeN := "SEINE",]
 fdi[gear_typeN %in% nets, gear_typeN := "NETS",]
 fdi[gear_typeN %in% dredges, gear_typeN := "DREDGES",]
